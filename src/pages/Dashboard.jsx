@@ -101,9 +101,11 @@ export async function dashboardAction({ request }) {
 const Dashboard = () => {
   const { userName, budgets, expenses } = useLoaderData();
 
-  const bgs = budgets.map((obj, id) =>
-    Object.assign({}, obj, { spent: calculateSpentByBudget(obj.id) })
-  );
+  const bgs = Array.isArray(budgets)
+    ? budgets.map((obj) =>
+        Object.assign({}, obj, { spent: calculateSpentByBudget(obj.id) })
+      )
+    : [];
 
   console.log(bgs);
 

@@ -16,8 +16,19 @@ export const generateRandomHexColor = () => {
 };
 
 // Local storage
+// export const fetchData = (key) => {
+//   return JSON.parse(localStorage.getItem(key));
+// };
+
 export const fetchData = (key) => {
-  return JSON.parse(localStorage.getItem(key));
+  if (typeof localStorage === "undefined") return null;
+  const data = localStorage.getItem(key);
+  try {
+    return data ? JSON.parse(data) : null;
+  } catch (e) {
+    console.error(`Ошибка при разборе localStorage["${key}"]:`, e);
+    return null;
+  }
 };
 
 // Get all items from local storage
