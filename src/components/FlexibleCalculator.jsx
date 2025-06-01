@@ -262,7 +262,7 @@ const FlexibleCalculator = () => {
   // ---------------------------------------------
   return (
     <div style={styles.container}>
-      <h2>Гибкий калькулятор ({activeMethod})</h2>
+      <h2>Калькулятор {activeMethod}</h2>
 
       {/* Ввод ежемесячного дохода */}
       <div style={styles.inputGroup}>
