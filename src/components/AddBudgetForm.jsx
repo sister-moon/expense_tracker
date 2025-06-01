@@ -23,7 +23,7 @@ const AddBudgetForm = () => {
 
   return (
     <div className="form-wrapper">
-      <h2 className="h3">Создать категорию расходов</h2>
+      <h2 className="h3">Создать новую категорию расходов</h2>
       <fetcher.Form method="post" className="grid-sm" ref={formRef}>
         <div className="grid-xs">
           <label htmlFor="newBudget">Название</label>
@@ -31,7 +31,7 @@ const AddBudgetForm = () => {
             type="text"
             name="newBudget"
             id="newBudget"
-            placeholder="Продукты"
+            placeholder=""
             required
             ref={focusRef}
           />
@@ -43,7 +43,7 @@ const AddBudgetForm = () => {
             step="1"
             name="newBudgetAmount"
             id="newBudgetAmount"
-            placeholder="3 500 ₽"
+            placeholder=""
             required
             inputMode="decimal"
           />

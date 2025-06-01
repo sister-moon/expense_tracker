@@ -25,21 +25,30 @@ const AddExpenseForm = ({ budgets }) => {
 
   return (
     <div className="form-wrapper">
-      <h2 className="h3">
-        Добавить новые расходы в категорию{" "}
-        <span className="accent">
-          {budgets.length === 1 && `${budgets.map((budg) => budg.name)}`}
-        </span>{" "}
-      </h2>
+      <h2 className="h3">Создать новую транзакцию</h2>
       <fetcher.Form method="post" className="grid-sm" ref={formRef}>
         <div className="expense-inputs">
+          <div className="grid-xs" hidden={budgets.length === 1}>
+            <label htmlFor="newExpenseBudget">Категория расходов</label>
+            <select name="newExpenseBudget" id="newExpenseBudget" required>
+              {budgets
+                .sort((a, b) => a.createdAt - b.createdAt)
+                .map((budget) => {
+                  return (
+                    <option key={budget.id} value={budget.id}>
+                      {budget.name}
+                    </option>
+                  );
+                })}
+            </select>
+          </div>
           <div className="grid-xs">
             <label htmlFor="newExpense">Название</label>
             <input
               type="text"
               name="newExpense"
               id="newExpense"
-              placeholder="Кофе"
+              placeholder=""
               ref={focusRef}
               required
             />
@@ -52,25 +61,12 @@ const AddExpenseForm = ({ budgets }) => {
               inputMode="decimal"
               name="newExpenseAmount"
               id="newExpenseAmount"
-              placeholder="200 ₽"
+              placeholder=""
               required
             />
           </div>
         </div>
-        <div className="grid-xs" hidden={budgets.length === 1}>
-          <label htmlFor="newExpenseBudget">Категория расходов</label>
-          <select name="newExpenseBudget" id="newExpenseBudget" required>
-            {budgets
-              .sort((a, b) => a.createdAt - b.createdAt)
-              .map((budget) => {
-                return (
-                  <option key={budget.id} value={budget.id}>
-                    {budget.name}
-                  </option>
-                );
-              })}
-          </select>
-        </div>
+
         <input type="hidden" name="_action" value="createExpense" />
         <button type="submit" className="btn btn--dark" disabled={isSubmitting}>
           {isSubmitting ? (

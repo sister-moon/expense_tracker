@@ -1,22 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { fetchData } from "../helpers";
-
-export async function plansLoader() {
-  const plans = fetchData("plans");
-  return { plans };
-}
+import React, { useContext } from "react";
+import { PlansContext } from "../context/PlansContext";
 
 function FinancialPlans() {
-  // Сразу загружаем планы из localStorage в useState!
-  const [plans, setPlans] = useState(() => {
-    const savedPlans = localStorage.getItem("financialPlans");
-    return savedPlans ? JSON.parse(savedPlans) : [];
-  });
-
-  // Сохраняем планы в localStorage при каждом изменении
-  useEffect(() => {
-    localStorage.setItem("financialPlans", JSON.stringify(plans));
-  }, [plans]);
+  const { plans, setPlans } = useContext(PlansContext);
 
   const addNewPlan = () => {
     const title = prompt("Введите название цели:");
@@ -149,10 +135,6 @@ const styles = {
     margin: "0 auto",
     padding: "20px",
     fontFamily: "Arial, sans-serif",
-  },
-  heading: {
-    textAlign: "center",
-    marginBottom: "20px",
   },
   button: {
     padding: "10px 20px",

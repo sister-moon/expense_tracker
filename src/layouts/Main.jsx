@@ -16,16 +16,19 @@ export function mainLoader() {
   return { userName };
 }
 
-const Main = () => {
-  const { userName } = useLoaderData();
+import { PlansProvider } from "../context/PlansContext";
 
+const Layout = ({ userName }) => {
   return (
     <div className="layout">
       <Nav userName={userName} />
       <main>
-        <Outlet />
+        <PlansProvider>
+          <Outlet />
+        </PlansProvider>
       </main>
     </div>
   );
 };
-export default Main;
+
+export default Layout;

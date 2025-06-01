@@ -36,8 +36,86 @@ import { useState } from "react";
 // loader
 export function dashboardLoader() {
   const userName = fetchData("userName");
-  const budgets = fetchData("budgets");
+  let budgets = fetchData("budgets");
   const expenses = fetchData("expenses");
+
+  if (!budgets || budgets.length === 0) {
+    budgets = [
+      {
+        id: crypto.randomUUID(),
+        name: "Продукты",
+        amount: 15000,
+        createdAt: Date.now(),
+        spent: 0,
+        color: "0 65% 50%",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Жильё и коммуналка",
+        amount: 7000,
+        createdAt: Date.now(),
+        spent: 0,
+        color: "32 65% 50%",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Транспорт",
+        amount: 3000,
+        createdAt: Date.now(),
+        spent: 0,
+        color: "64 65% 50%",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Связь и интернет",
+        amount: 1000,
+        createdAt: Date.now(),
+        spent: 0,
+        color: "96 65% 50%",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Здоровье",
+        amount: 2000,
+        createdAt: Date.now(),
+        spent: 0,
+        color: "128 65% 50%",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Одежда",
+        amount: 3000,
+        createdAt: Date.now(),
+        spent: 0,
+        color: "160 65% 50%",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Развлечения",
+        amount: 2500,
+        createdAt: Date.now(),
+        spent: 0,
+        color: "192 65% 50%",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Образование",
+        amount: 1500,
+        createdAt: Date.now(),
+        spent: 0,
+        color: "224 65% 50%",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Сбережения",
+        amount: 5000,
+        createdAt: Date.now(),
+        spent: 0,
+        color: "256 65% 50%",
+      },
+    ];
+    localStorage.setItem("budgets", JSON.stringify(budgets));
+  }
 
   return { userName, budgets, expenses };
 }
@@ -57,6 +135,15 @@ export async function dashboardAction({ request }) {
     } catch (e) {
       throw new Error("Возникла какая-то проблема с аккаунтом.");
     }
+  }
+
+  if (_action === "editBudget") {
+    const budgets = fetchData("budgets") ?? [];
+    const updated = budgets.map((b) =>
+      b.id === values.budgetId ? { ...b, amount: +values.updatedAmount } : b
+    );
+    localStorage.setItem("budgets", JSON.stringify(updated));
+    return toast.success("Сумма категории обновлена!");
   }
 
   if (_action === "createBudget") {
@@ -106,6 +193,8 @@ const Dashboard = () => {
         Object.assign({}, obj, { spent: calculateSpentByBudget(obj.id) })
       )
     : [];
+
+  const filteredBgs = bgs.filter((item) => item.spent > 0);
 
   console.log(bgs);
 
@@ -175,7 +264,7 @@ const Dashboard = () => {
                     <PieChart width={750} height={750}>
                       <Pie
                         dataKey="spent"
-                        data={bgs}
+                        data={filteredBgs} // уже отфильтрованные по spent > 0
                         isAnimationActive={true}
                         cx="50%"
                         cy="50%"
@@ -183,11 +272,11 @@ const Dashboard = () => {
                         fill="#000"
                         label={renderCustomizedLabel}
                       >
-                        {budgets.map((budget, index) => (
+                        {filteredBgs.map((budgetItem) => (
                           <Cell
-                            key={index}
-                            fill={budgetColors(budget.color)}
-                            nameKey={budget.name}
+                            key={budgetItem.id}
+                            fill={budgetColors(budgetItem.color)}
+                            nameKey={budgetItem.name}
                           />
                         ))}
                         <LabelList
@@ -195,6 +284,7 @@ const Dashboard = () => {
                           position="outside"
                           offset={30}
                           labelLine={true}
+                          formatter={(value) => `${value.toLocaleString()} ₽`}
                         />
                       </Pie>
                       <Tooltip />

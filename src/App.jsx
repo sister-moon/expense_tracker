@@ -20,7 +20,7 @@ import ExpensesPage, {
   expensesLoader,
 } from "./pages/ExpensesPage";
 import CalculatorsPage, { calculatorsLoader } from "./pages/CalculatorsPage";
-import FinancialPlans, { plansLoader } from "./pages/FinancialPlans";
+import FinancialPlans from "./pages/FinancialPlans";
 import ReferenceBook, { directLoader } from "./pages/DirectoryPage";
 
 const router = createHashRouter([
@@ -67,7 +67,7 @@ const router = createHashRouter([
       {
         path: "plans",
         element: <FinancialPlans />,
-        loader: plansLoader,
+        // loader: plansLoader,
         action: expensesAction,
         errorElement: <Error />,
       },

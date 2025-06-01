@@ -1,4 +1,5 @@
 import FinancialGoalsCalculator from "../components/FinancialGoalsCalculator";
+import FlexibleCalculator from "../components/FlexibleCalculator";
 import FourEnvelopesCalculator from "../components/FourEnvelopes";
 import BudgetCalculator from "../components/MonthlyExpenseCategoriesCalculator";
 import MonthlyExpenseCalculator from "../components/MontlyExpenseCalculator";
@@ -14,11 +15,12 @@ export async function calculatorsLoader() {
 const CalculatorsPage = () => {
   return (
     <div class="dashboard center">
-      <MonthlyExpenseCalculator />
+      {/* <MonthlyExpenseCalculator />
       <BudgetCalculator />
       <FinancialGoalsCalculator />
       <FourEnvelopesCalculator />
-      <SixJarsCalculator />
+      <SixJarsCalculator /> */}
+      <FlexibleCalculator />
     </div>
   );
 };
