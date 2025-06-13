@@ -48,37 +48,34 @@ export const deleteItem = ({ key, id }) => {
 };
 
 // create budget
-export const createBudget = ({ name, amount }) => {
-  const newItem = {
+export const createBudget = ({ name, amount, month }) => {
+  const item = {
     id: crypto.randomUUID(),
-    name: name,
+    name,
     createdAt: Date.now(),
     amount: +amount,
     spent: 0,
     color: generateRandomColor(),
   };
-  const existingBudgets = fetchData("budgets") ?? [];
-  return localStorage.setItem(
-    "budgets",
-    JSON.stringify([...existingBudgets, newItem])
-  );
+  saveMonthlyItem("budgets", item, month);
 };
 
 // create expense
-export const createExpense = ({ name, amount, budgetId }) => {
-  const newItem = {
+export const createExpense = ({ name, amount, budgetId, month }) => {
+  const item = {
     id: crypto.randomUUID(),
-    name: name,
+    name,
     createdAt: Date.now(),
     amount: +amount,
-    budgetId: budgetId,
+    budgetId,
   };
 
+  // Сохраняем по месяцу
+  saveMonthlyItem("expenses", item, month);
+
+  // Параллельно сохраняем в общий список (для Dashboard и старых компонентов)
   const existingExpenses = fetchData("expenses") ?? [];
-  return localStorage.setItem(
-    "expenses",
-    JSON.stringify([...existingExpenses, newItem])
-  );
+  localStorage.setItem("expenses", JSON.stringify([...existingExpenses, item]));
 };
 
 // total spent by budget
@@ -114,4 +111,39 @@ export const formatCurrency = (amt, currency = "RUB") => {
     style: "currency",
     currency,
   });
+};
+
+export const getStorageKeyForMonth = (key, month) => `${key}-${month}`;
+
+// Получить данные
+export function fetchMonthlyData(type, yearMonth) {
+  const dataJSON = localStorage.getItem(type);
+  if (!dataJSON) return [];
+
+  try {
+    const data = JSON.parse(dataJSON);
+    if (!Array.isArray(data)) return [];
+
+    const [year, month] = yearMonth.split("-");
+    return data.filter((tx) => {
+      if (!tx.createdAt) return false;
+      const d = new Date(tx.createdAt);
+      return (
+        d.getFullYear() === Number(year) && d.getMonth() + 1 === Number(month)
+      );
+    });
+  } catch (e) {
+    console.error("Ошибка парсинга данных из localStorage", e);
+    return [];
+  }
+}
+
+// Сохранить запись
+export const saveMonthlyItem = (key, item, month) => {
+  const existing = fetchMonthlyData(key, month);
+  const updated = [...existing, item];
+  localStorage.setItem(
+    getStorageKeyForMonth(key, month),
+    JSON.stringify(updated)
+  );
 };

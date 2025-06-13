@@ -15,10 +15,10 @@ export async function calculatorsLoader() {
 const CalculatorsPage = () => {
   return (
     <div class="dashboard center">
-      {/* <MonthlyExpenseCalculator />
+      <MonthlyExpenseCalculator />
       <BudgetCalculator />
-      <FinancialGoalsCalculator />
-      <FourEnvelopesCalculator />
+
+      {/*<FourEnvelopesCalculator />
       <SixJarsCalculator /> */}
       <FlexibleCalculator />
     </div>

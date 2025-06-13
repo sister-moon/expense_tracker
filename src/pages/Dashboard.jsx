@@ -117,6 +117,78 @@ export function dashboardLoader() {
     localStorage.setItem("budgets", JSON.stringify(budgets));
   }
 
+  let expensesMocks = JSON.parse(localStorage.getItem("expenses")) || [];
+
+  if (expensesMocks.length === 0) {
+    expensesMocks = [
+      {
+        id: crypto.randomUUID(),
+        name: "Покупка продуктов в магазине",
+        amount: 1200,
+        createdAt: new Date("2025-06-10T12:00:00Z").getTime(),
+        budgetId: budgets.find((b) => b.name === "Продукты").id,
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Оплата аренды квартиры",
+        amount: 7000,
+        createdAt: new Date("2025-06-01T08:30:00Z").getTime(),
+        budgetId: budgets.find((b) => b.name === "Жильё и коммуналка").id,
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Поездка на такси",
+        amount: 500,
+        createdAt: new Date("2025-05-22T19:00:00Z").getTime(),
+        budgetId: budgets.find((b) => b.name === "Транспорт").id,
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Интернет за июнь",
+        amount: 1000,
+        createdAt: new Date("2025-06-03T14:00:00Z").getTime(),
+        budgetId: budgets.find((b) => b.name === "Связь и интернет").id,
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Визит к врачу",
+        amount: 2000,
+        createdAt: new Date("2025-04-15T10:00:00Z").getTime(),
+        budgetId: budgets.find((b) => b.name === "Здоровье").id,
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Покупка футболки",
+        amount: 1500,
+        createdAt: new Date("2025-05-10T16:00:00Z").getTime(),
+        budgetId: budgets.find((b) => b.name === "Одежда").id,
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Кинотеатр",
+        amount: 700,
+        createdAt: new Date("2025-06-12T20:00:00Z").getTime(),
+        budgetId: budgets.find((b) => b.name === "Развлечения").id,
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Курс по программированию",
+        amount: 1500,
+        createdAt: new Date("2025-03-25T11:00:00Z").getTime(),
+        budgetId: budgets.find((b) => b.name === "Образование").id,
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Перевод на сберегательный счет",
+        amount: 5000,
+        createdAt: new Date("2025-06-01T09:00:00Z").getTime(),
+        budgetId: budgets.find((b) => b.name === "Сбережения").id,
+      },
+    ];
+
+    localStorage.setItem("expenses", JSON.stringify(expensesMocks));
+  }
+
   return { userName, budgets, expenses };
 }
 
@@ -148,18 +220,21 @@ export async function dashboardAction({ request }) {
 
   if (_action === "createBudget") {
     try {
-      createBudget({
-        name: values.newBudget,
-        amount: values.newBudgetAmount,
-        spent: values.newBudgetSpent,
+      createExpense({
+        name: values.newExpense,
+        amount: values.newExpenseAmount,
+        budgetId: values.newExpenseBudget,
+        month: currentMonth, // ← добавлено
       });
-      return toast.success("Категория создана!");
+      return toast.success(`Расходы на ${values.newExpense} добавлены!`);
     } catch (e) {
-      throw new Error("Возникла проблема при создании категория.");
+      console.error("Ошибка при создании транзакции:", e);
+      throw new Error("Возникла проблема при создании транзакции.");
     }
   }
 
   if (_action === "createExpense") {
+    console.log("==> Пытаемся создать транзакцию", values);
     try {
       createExpense({
         name: values.newExpense,
